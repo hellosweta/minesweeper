@@ -14,9 +14,9 @@ class Tile
 
   def reveal
     if @revealed == false
-      num_bombs = neighbor_bomb_count
       @revealed = true
       @flagged = false
+      num_bombs = neighbor_bomb_count
       if num_bombs == 0
         self.neighbors.each { |neighbor| neighbor.reveal if neighbor.revealed == false}
       end
