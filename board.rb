@@ -27,8 +27,35 @@ class Board
     r, c = pos
     @grid[r][c]
   end
+
+  def reveal(pos)
+    @grid[pos].reveal
+  end
+
+  def render
+    string = "\n"
+    for i in 0...@board_size do
+      row = ""
+      for j in 0...@board_size do
+        tile = self[[i, j]]
+        if tile.revealed
+          if tile.bombed
+            row << "* "
+          else
+            row << tile.neighbor_bomb_count
+            row << " "
+          end
+        else
+          if tile.flagged
+            row << "f "
+          else
+            row << ". "
+          end
+        end
+      end
+      string << row
+      string << "\n"
+    end
+    puts string
+  end
 end
-
-
-b = Board.new
-p b[[3,7]].neighbor_bomb_count
