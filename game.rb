@@ -1,14 +1,14 @@
 require_relative "board"
 class Minesweeper
 
-  def initialize
-    @board = Board.new
+  def initialize(board_size = 9)
+    @board = Board.new(board_size)
     @won = false
   end
 
   def play
     play_turn until game_over?
-    @board.render
+    @board.render(true)
     puts @won ? "You win!" : "You lose :( "
   end
 
@@ -67,5 +67,5 @@ class Minesweeper
 
 end
 
-g = Minesweeper.new
+g = Minesweeper.new(4)
 g.play
