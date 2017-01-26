@@ -3,11 +3,12 @@ class Minesweeper
 
   def initialize
     @board = Board.new
-    @board.render
+    @won = false
   end
 
   def play
     play_turn until game_over?
+    @board.render
     puts @won ? "You win!" : "You lose :( "
   end
 
@@ -15,15 +16,56 @@ class Minesweeper
     @board.render
     pos = prompt_pos
     action = prompt_action
-    @board.reveal(pos) if action == "reveal"
-    @board.flag(pos) if action == "flag"
+    @board.reveal(pos) if action == "r"
+    @board.flag(pos) if action == "f"
   end
 
   def game_over?
+    tiles = @board.grid.flatten
+    # if there are any revealed & bombed tiles, then player lost
+    return true if tiles.any? { |tile| tile.revealed && tile.bombed }
+    # if everything that is not revealed is a bomb, then player won
+    not_revealed = tiles.select { |tile| !tile.revealed }
+    if not_revealed.all? { |tile| tile.bombed }
+      @won = true
+      return true
+    end
 
+    return false
   end
+
+  def prompt_pos
+    pos = []
+    until valid_pos?(pos)
+      puts "Please enter a position (e.g.; 0,2)"
+      print "> "
+      pos = parse_pos(gets.chomp)
+    end
+    pos
+  end
+
+  def parse_pos(input)
+    pos = input.split(",").map { |el| Integer(el)}
+  end
+
+  def valid_pos?(pos)
+    pos.length == 2 && pos.is_a?(Array) && !@board[pos].nil?
+  end
+
+  def prompt_action
+    action = ""
+    until action == "r" || action == "f"
+      puts "Please enter an action (r for reveal, f for flag)"
+      print "> "
+      action = gets.chomp.downcase
+    end
+    action
+  end
+
+
 
 
 end
 
 g = Minesweeper.new
+g.play
