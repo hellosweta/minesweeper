@@ -15,9 +15,14 @@ class Tile
   def reveal
     if @revealed == false
       @revealed = true
+      @flagged = false
     else
       puts "Tile is already revealed."
     end
+  end
+
+  def flag
+    @flagged = !@flagged
   end
 
   def neighbors
