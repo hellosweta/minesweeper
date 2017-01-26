@@ -14,14 +14,22 @@ class Tile
 
   def reveal
     if @revealed == false
+      num_bombs = neighbor_bomb_count
       @revealed = true
       @flagged = false
+      if num_bombs == 0
+        self.neighbors.each { |neighbor| neighbor.reveal if neighbor.revealed == false}
+      end
     else
       puts "Tile is already revealed."
     end
   end
 
   def flag
+    if @revealed
+      puts "Can't flag a revealed tile"
+      return
+    end
     @flagged = !@flagged
   end
 

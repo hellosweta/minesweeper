@@ -24,25 +24,41 @@ class Board
   end
 
   def [](pos)
+    return nil if valid_pos?(pos) == false
     r, c = pos
     @grid[r][c]
   end
 
+  def valid_pos?(pos)
+    r, c = pos
+    r < @board_size && c < @board_size && r >= 0 && c >= 0
+  end
+
   def reveal(pos)
-    @grid[pos].reveal
+    self[pos].reveal
+  end
+
+  def flag(pos)
+    self[pos].flag
   end
 
   def render
-    string = "\n"
+    system("clear")
+    string = "\n  " + (0...@board_size).to_a.join(" ") + "\n"
     for i in 0...@board_size do
-      row = ""
+      row = "#{i} "
       for j in 0...@board_size do
         tile = self[[i, j]]
         if tile.revealed
           if tile.bombed
             row << "* "
           else
-            row << tile.neighbor_bomb_count
+            num_bombs = tile.neighbor_bomb_count
+            if num_bombs == 0
+              row << "_"
+            else
+              row << num_bombs.to_s
+            end
             row << " "
           end
         else
@@ -56,6 +72,7 @@ class Board
       string << row
       string << "\n"
     end
+    string << "\n"
     puts string
   end
 end
