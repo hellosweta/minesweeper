@@ -1,11 +1,11 @@
 require_relative("tile")
-require("colorize")
+
 class Board
   attr_reader :grid, :board_size
   def initialize(board_size = 9)
     @board_size = board_size
     @grid = []
-    @colors = [:light_black, :light_blue, :green, :red, :magenta, :dark_red, :cyan, :black, :light_green]
+
     populate_grid
   end
 
@@ -26,7 +26,7 @@ class Board
   end
 
   def [](pos)
-    return nil if valid_pos?(pos) == false
+    return nil unless valid_pos?(pos)
     r, c = pos
     @grid[r][c]
   end
@@ -44,32 +44,22 @@ class Board
     self[pos].flag
   end
 
-  def render(reveal_all = false)
+  def reveal_all
+    @grid.each do |row|
+      row.each do |tile|
+        tile.reveal unless tile.revealed
+      end
+    end
+  end
+
+  def render
     system("clear")
     string = "\n  " + (0...@board_size).to_a.join(" ") + "\n"
     for i in 0...@board_size do
       row = "#{i} "
       for j in 0...@board_size do
         tile = self[[i, j]]
-        if tile.revealed || reveal_all
-          if tile.bombed
-            row << "* "
-          else
-            num_bombs = tile.neighbor_bomb_count
-            if num_bombs == 0
-              row << "-".colorize(@colors[num_bombs])
-            else
-              row << num_bombs.to_s.colorize(@colors[num_bombs])
-            end
-            row << " "
-          end
-        else
-          if tile.flagged
-            row << "f ".colorize(:light_red)
-          else
-            row << ". "
-          end
-        end
+        row << tile.to_s
       end
       string << row
       string << "\n"

@@ -8,7 +8,8 @@ class Minesweeper
 
   def play
     play_turn until game_over?
-    @board.render(true)
+    @board.reveal_all
+    @board.render
     puts @won ? "You win!" : "You lose :( "
   end
 
