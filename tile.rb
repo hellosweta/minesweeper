@@ -1,7 +1,8 @@
 # require_relative("board")
-
+require("colorize")
 class Tile
-  attr_reader :bombed, :flagged, :revealed
+  attr_reader :bombed, :flagged
+  attr_accessor :revealed
 
   def initialize(board, pos, bombed)
     @board = board
@@ -10,15 +11,16 @@ class Tile
     @flagged = false
     @revealed = false
     @neighbor_directions = [[-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]]
+    @colors = [:light_black, :light_blue, :green, :red, :magenta, :dark_red, :cyan, :black, :light_green]
   end
 
   def reveal
-    if @revealed == false
+    unless @revealed
       @revealed = true
       @flagged = false
       num_bombs = neighbor_bomb_count
       if num_bombs == 0
-        self.neighbors.each { |neighbor| neighbor.reveal if neighbor.revealed == false}
+        self.neighbors.each { |neighbor| neighbor.reveal unless neighbor.revealed}
       end
     else
       puts "Tile is already revealed."
@@ -32,6 +34,62 @@ class Tile
     end
     @flagged = !@flagged
   end
+
+  def to_s
+    string = ""
+    if revealed_bomb?
+      string = "* "
+    elsif revealed_safe?
+      string = safe_bomb_string
+    elsif @flagged
+      string = "f ".colorize(:light_red)
+    else
+      string = ". "
+    end
+    string
+  end
+
+  def revealed_bomb?
+    @bombed && @revealed
+  end
+
+  def revealed_safe?
+    !@bombed && @revealed
+  end
+
+  def safe_bomb_string
+    string = ""
+    num_bombs = neighbor_bomb_count
+    if num_bombs == 0
+      string = "-".colorize(@colors[num_bombs])
+    else
+      string = num_bombs.to_s.colorize(@colors[num_bombs])
+    end
+    string += " "
+  end
+  #
+  #
+  #   if @revealed || reveal_all
+  #     if @bombed
+  #       string = "* "
+  #     else
+  #       num_bombs = neighbor_bomb_count
+  #       if num_bombs == 0
+  #         string = "-".colorize(@colors[num_bombs])
+  #       else
+  #         string = num_bombs.to_s.colorize(@colors[num_bombs])
+  #       end
+  #       string += " "
+  #     end
+  #   else
+  #     if @flagged
+  #       string = "f ".colorize(:light_red)
+  #     else
+  #       string = ". "
+  #     end
+  #   end
+  #   string
+  # end
 
   def neighbors
     neighbor_arr = []
