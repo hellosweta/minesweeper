@@ -1,3 +1,5 @@
+#TODO: Create some sort of way for user to quit out.
+
 require_relative "board"
 class Minesweeper
 
@@ -63,24 +65,43 @@ class Minesweeper
     action
   end
 
+  def self.yaml_load(file_name)
+    load_file = File.read(file_name)
+    YAML.load(load_file)
+  end
 
+  def save
 
+    yaml_file = self.to_yaml
+    puts "Enter .yaml file name (without extension): "
+    p "> "
+    file_name = "save_files/" + $STDIN.gets.chomp + ".yaml"
+
+    #TODO: actually open the file and write to it
+  end
 
 end
-# if __FILE__ == $PROGRAM_NAME
-#   puts "Welcome to Minesweeper."
-#   input = ""
-#   until input == "y" || input == "n"
-#     puts "Would you like to load a saved game? (y/n)"
-#     p "> "
-#     input = gets.chomp.downcase
-#   end
-#
-#   if input == "y"
-#     saved_game =
-#   else
+if __FILE__ == $PROGRAM_NAME
+  puts "Welcome to Minesweeper."
+  input = ""
+  until input == "y" || input == "n"
+    puts "Would you like to load a saved game? (y/n)"
+    p "> "
+    input = gets.chomp.downcase
+  end
+  g = nil
+  if input == "y"
+    puts "Enter .yaml file name (without extension): "
+    p "> "
+    file_name = "save_files/" + $STDIN.gets.chomp + ".yaml"
+    if File.exist?(file_name)
+      g = Game.yaml_load(file_name)
+    else
+      puts "Invalid file name. Creating new game."
+      g = Minesweeper.new(4)
+    end
+  else
     g = Minesweeper.new(4)
-    g.play
-#   end
-#
-# end
+  end
+  g.play unless g.nil?
+end
