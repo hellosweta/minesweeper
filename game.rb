@@ -67,6 +67,20 @@ class Minesweeper
 
 
 end
-
-g = Minesweeper.new(4)
-g.play
+# if __FILE__ == $PROGRAM_NAME
+#   puts "Welcome to Minesweeper."
+#   input = ""
+#   until input == "y" || input == "n"
+#     puts "Would you like to load a saved game? (y/n)"
+#     p "> "
+#     input = gets.chomp.downcase
+#   end
+#
+#   if input == "y"
+#     saved_game =
+#   else
+    g = Minesweeper.new(4)
+    g.play
+#   end
+#
+# end
